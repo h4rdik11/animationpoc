@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { motion, useViewportScroll } from "framer-motion";
+import React, { useLayoutEffect, useState } from "react";
+import "./App.css";
+import hero from "./assets/images/hero.png";
 
-function App() {
+const useOnScroll = () => {
+  const [scroll, setScroll] = useState({
+    scrollY: window.scrollY,
+    scrollX: window.scrollX,
+  });
+  useLayoutEffect(() => {
+    window.addEventListener("scroll", onScroll);
+  }, []);
+
+  const onScroll = (ev) => {
+    setScroll({ scrollY: window.scrollY, scrollX: window.scrollX });
+  };
+
+  return scroll;
+};
+
+export default function App() {
+  const { scrollYProgress } = useViewportScroll();
+  useOnScroll();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <motion.div id="App" className="App">
+      <motion.img
+        src={hero}
+        style={{
+          width: `${100}%`,
+          margin: `0`,
+          borderBottomLeftRadius: `${Math.floor(
+            scrollYProgress.get() * 1000
+          )}px`,
+          borderBottomRightRadius: `${Math.floor(
+            scrollYProgress.get() * 1000
+          )}px`,
+          transition: "all 0.1s ease-in-out",
+        }}
+        alt="hero image"
+      />
+    </motion.div>
   );
 }
-
-export default App;
